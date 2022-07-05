@@ -36,6 +36,24 @@ router.get('/user/:email', function (req, res) {
         res.json({ resultado: 'ok', datos: rows });
     });
 });
+router.get('/transitos/:tipo/:fechaIni/:fechaFin', function (req, res) {
+    const query = "SELECT * FROM " + req.params.tipo + " WHERE status > 0 AND fecha BETWEEN '" + req.params.fechaIni + "' AND '" + req.params.fechaFin + "' ORDER BY fecha DESC";
+    console.log('get transitos, ', query);
+    server_1.conex.query(query, function (err, rows, fields) {
+        if (err)
+            throw err;
+        res.json({ resultado: 'ok', datos: rows });
+    });
+});
+router.get('/transitosXpatente/:tipo/:fechaIni/:fechaFin/:patente', function (req, res) {
+    const query = "SELECT * FROM " + req.params.tipo + " WHERE status > 0 AND fecha BETWEEN '" + req.params.fechaIni + "' AND '" + req.params.fechaFin + "' AND patente = '" + req.params.patente + "'  ORDER BY fecha DESC";
+    console.log('get transitos, ', query);
+    server_1.conex.query(query, function (err, rows, fields) {
+        if (err)
+            throw err;
+        res.json({ resultado: 'ok', datos: rows });
+    });
+});
 ///// ============================================= /////
 ///// ============================================= /////
 ///// =================== POST ==================== /////

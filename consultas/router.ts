@@ -51,6 +51,31 @@ function(req: Request ,res: Response) {
 });
 
 
+router.get('/transitos/:tipo/:fechaIni/:fechaFin', 
+function(req: Request ,res: Response) {
+    
+    const query = "SELECT * FROM " + req.params.tipo + " WHERE status > 0 AND fecha BETWEEN '" + req.params.fechaIni + "' AND '" + req.params.fechaFin + "' ORDER BY fecha DESC";
+    console.log('get transitos, ', query);
+    
+    conex.query(query, function(err:any, rows:any, fields:any) {
+        if (err) throw err;
+        res.json({ resultado: 'ok', datos: rows });
+    });
+});
+
+router.get('/transitosXpatente/:tipo/:fechaIni/:fechaFin/:patente', 
+function(req: Request ,res: Response) {
+    
+    const query = "SELECT * FROM " + req.params.tipo + " WHERE status > 0 AND fecha BETWEEN '" + req.params.fechaIni + "' AND '" + req.params.fechaFin + "' AND patente = '" + req.params.patente  +"'  ORDER BY fecha DESC";
+    console.log('get transitos, ', query);
+    
+    conex.query(query, function(err:any, rows:any, fields:any) {
+        if (err) throw err;
+        res.json({ resultado: 'ok', datos: rows });
+    });
+});
+
+
 
 
 
