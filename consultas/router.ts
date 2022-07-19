@@ -12,6 +12,13 @@ const router = Router();
 ///// ============================================= /////
 ///// ============================================= /////
 
+
+router.get('/test', 
+function(req: Request ,res: Response) {
+        res.json({ resultado: 'ok', datos: 'actualizado el 19 de Julio a las 08:29' });
+});
+
+
 router.get('/generales/:tabla', 
 function(req: Request ,res: Response) {
     
@@ -75,6 +82,31 @@ function(req: Request ,res: Response) {
     });
 });
 
+router.get('/coincidencias', 
+function(req: Request ,res: Response) {
+    
+    // const query = "SELECT nf.id, nf.autopistaId, nf.patente, nf.portico, nf.fecha, nf.hora, nf.monto, nf.status FROM transitosNF nf LEFT JOIN transitosF f ON nf.patente = f.patente WHERE nf.fecha = f.fecha AND nf.hora = f.hora";
+    const query = "SELECT * FROM transitosNF nf LEFT JOIN transitosF f on f.patente = nf.patente AND f.fecha = nf.fecha AND f.hora = nf.hora";
+    console.log('get coincidencias, ', query);
+    
+    conex.query(query, function(err:any, rows:any, fields:any) {
+        if (err) throw err;
+        res.json({ resultado: 'ok', datos: rows });
+    });
+});
+
+// router.get('/nfXpatente/:patentes', 
+// function(req: Request ,res: Response) {
+    
+//     const query = "SELECT * FROM transitosNF WHERE patente IN (" + req.params.patentes + ")";
+//     console.log('get coincidencias, ', query);
+    
+//     conex.query(query, function(err:any, rows:any, fields:any) {
+//         if (err) throw err;
+//         res.json({ resultado: 'ok', datos: rows });
+//     });
+// });
+
 
 
 
@@ -129,7 +161,7 @@ router.post('/post/loteTransitos/:tipo',
         let DATOS = '';
         // console.log('body', req.body);
         for (let x in req.body) {
-            DATOS += "(" + req.body[x].companyId + ",'" + req.body[x].patente + "'," + req.body[x].autopistaId + ",'" + req.body[x].portico + "', '" + req.body[x].eje + "', '" + req.body[x].fecha + "', '" + req.body[x].hora + "', " + req.body[x].monto + ", " + req.body[x].status + ", '" + req.body[x].estado + "' ),"
+            DATOS += "(" + req.body[x].companyId + ",'" + req.body[x].patente + "'," + req.body[x].autopistaId + ",'" + req.body[x].portico + "', '" + req.body[x].eje + "', '" + req.body[x].fecha + "', '" + req.body[x].hora + "', " + req.body[x].monto + ", " + req.body[x].status + ", '" + req.body[x].estado + "', " + req.body[x].aplicaTarifa + " ),"
         }
         
         DATOS = DATOS.slice(0, -1);
@@ -139,9 +171,9 @@ router.post('/post/loteTransitos/:tipo',
         let query = '';
 
         if (req.params.tipo == 'facturados'){
-            query = "INSERT INTO transitosF (companyId, patente, autopistaId, portico, eje, fecha, hora, monto, status, estado) VALUES " + DATOS;
+            query = "INSERT INTO transitosF (companyId, patente, autopistaId, portico, eje, fecha, hora, monto, status, estado, aplicaTarifa) VALUES " + DATOS;
         } else {
-            query = "INSERT INTO transitosNF (companyId, patente, autopistaId, portico, eje, fecha, hora, monto, status, estado) VALUES " + DATOS;
+            query = "INSERT INTO transitosNF (companyId, patente, autopistaId, portico, eje, fecha, hora, monto, status, estado, aplicaTarifa) VALUES " + DATOS;
         }
         // ;
 
